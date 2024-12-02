@@ -1,4 +1,3 @@
-// src/components/PortfolioResults.js
 import React from 'react';
 
 function PortfolioResults({ portfolio }) {
@@ -12,7 +11,16 @@ function PortfolioResults({ portfolio }) {
       <ul>
         {portfolio.map((item, index) => (
           <li key={index}>
-            {item.name}: {item.allocation}%
+            {item.assetType}: {item.percentage}% 
+            {item.stocks && (
+              <ul>
+                {item.stocks.map((stock, idx) => (
+                  <li key={idx}>
+                    {stock.name} ({stock.symbol}): ${stock.price.toFixed(2)}
+                  </li>
+                ))}
+              </ul>
+            )}
           </li>
         ))}
       </ul>

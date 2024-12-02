@@ -1,54 +1,102 @@
-// src/App.js
-import React, { useState } from 'react';
-import PortfolioForm from './components/PortfolioForm';
-import PortfolioResults from './components/PortfolioResults';
-import Login from './components/Login';
-import Signup from './components/Signup';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import OAuthLogin from './components/OAuthLogin'; // Import Google OAuth login component
+import Signup from './components/Signup'; // Import Signup component
 
 function App() {
-  const [portfolio, setPortfolio] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false); // To handle login state
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isSignup, setIsSignup] = useState(false);  // Manage signup state
+  const navigate = useNavigate();
 
-  const handleFormSubmit = async (preferences) => {
-    // Destructure the preferences object to access riskTolerance, financialGoal, and age
-    const { riskTolerance, financialGoal, age } = preferences;
-    
-    // Simulate fetching portfolio recommendations based on the preferences
-    console.log('Submitted preferences:', { riskTolerance, financialGoal, age });
-
-    // Dummy data for portfolio recommendations (this should be replaced by your API call)
-    const dummyPortfolio = [
-      { name: 'Stocks', allocation: 60 },
-      { name: 'Bonds', allocation: 30 },
-      { name: 'Real Estate', allocation: 10 },
-    ];
-
-    setPortfolio(dummyPortfolio); // This is where portfolio data is set
+  // Handle email/password login
+  const handleLogin = () => {
+    // Replace with actual API call for login
+    if (email && password) {
+      console.log('Login with email:', email, 'and password:', password);
+      setIsLoggedIn(true);
+      localStorage.setItem('token', 'dummy-token'); // Save a dummy token in localStorage
+      navigate('/portfolio'); // Redirect to portfolio after successful login
+    } else {
+      alert('Please enter both email and password');
+    }
   };
 
-  const handleLogin = (credentials) => {
-    console.log('Logging in with:', credentials);
-    setIsLoggedIn(true); // Set the logged-in state to true
+  // Handle user logout
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setIsLoggedIn(false);
+    navigate('/login'); // Redirect to login page after logout
   };
 
-  const handleSignup = (credentials) => {
-    console.log('Signing up with:', credentials);
-    setIsLoggedIn(true); // Optionally set logged-in state after signup
-  };
+  // Check for saved token when the app first loads
+  useEffect(() => {
+    const savedToken = localStorage.getItem('token');
+    if (savedToken) {
+      setIsLoggedIn(true);
+    }
+  }, []);
 
   return (
-    <div>
-      <h1>Robo-Advisor</h1>
+    <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <h1>Welcome to the Robo-Advisor</h1>
+
       {isLoggedIn ? (
-        <>
-          <PortfolioForm onSubmit={handleFormSubmit} />
-          <PortfolioResults portfolio={portfolio} />
-        </>
+        <div>
+          <p>You are logged in!</p>
+          <button onClick={handleLogout}>Log Out</button>
+        </div>
       ) : (
-        <>
-          <Login onLogin={handleLogin} />
-          <Signup onSignup={handleSignup} />
-        </>
+        <div>
+          {isSignup ? (
+            <Signup onSignup={handleLogin} setIsSignup={setIsSignup} />
+          ) : (
+            <>
+              <h2>Login</h2>
+              <div>
+                <label>
+                  Email:
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                  />
+                </label>
+              </div>
+              <div>
+                <label>
+                  Password:
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                  />
+                </label>
+              </div>
+              <div>
+                <button onClick={handleLogin}>Log In</button>
+              </div>
+              <div>
+                <h3>Or sign in with Google:</h3>
+                <OAuthLogin onOAuthLogin={handleLogin} />
+              </div>
+              <div>
+                <p>
+                  Don't have an account?{' '}
+                  <button
+                    onClick={() => setIsSignup(true)}  // Set isSignup to true to show Signup form
+                    style={{ background: 'none', border: 'none', color: '#007BFF', cursor: 'pointer' }}
+                  >
+                    Sign Up
+                  </button>
+                </p>
+              </div>
+            </>
+          )}
+        </div>
       )}
     </div>
   );
