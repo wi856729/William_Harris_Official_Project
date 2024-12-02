@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { GoogleOAuthProvider } from '@react-oauth/google'; // Import GoogleOAuthProvider
+import { GoogleOAuthProvider } from '@react-oauth/google'; 
 import App from './App';
 import OAuthCallback from './components/OAuthCallback';
 import PortfolioForm from './components/PortfolioForm';
 import Login from './components/Login';
-import Signup from './components/Signup'; // Import the Signup component
+import Signup from './components/Signup'; 
 
 // Get the Google Client ID from .env (REACT_APP_GOOGLE_CLIENT_ID)
 const GOOGLE_CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -15,7 +15,7 @@ if (!GOOGLE_CLIENT_ID) {
   console.error("Google Client ID is missing. Check your .env file.");
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root')); // Render into the DOM
+const root = ReactDOM.createRoot(document.getElementById('root')); 
 root.render(
   <React.StrictMode>
     <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
